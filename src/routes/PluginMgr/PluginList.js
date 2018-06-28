@@ -155,7 +155,7 @@ export default class PluginList extends PureComponent {
     const props = {
       name: 'file',
       multiple: true,
-      action: 'http://173.199.118.9:1978/plugin/add',
+      action: 'http://localhost:1978/plugin/add',
       headers:{'token':localStorage.getItem('token')},
       onChange(info) {
         const status = info.file.status;

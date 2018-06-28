@@ -135,23 +135,25 @@ class TaskList extends PureComponent {
       });
     }
     
+
     const OPER_STATUS = {
-      new: 0,
-      implement:1,
-      paused:2,
-      complete:3,
-      deleted:-1,
+      new: 'new',
+      run:'run',
+      pause:'pause',
+      complete:'complete',
+      delete:'delete'
     }
-    const IMPL_STATUS={
-      wrong:-1,  
-      normal:0,
-      complete:1,
-    }
+  const IMPL_STATUS={
+    wrong:'wrong',  
+    waiting:'waiting',
+    running:'running',
+    complete:'complete',
+  }
     const ListContent = ({ data: { user, createdAt, percent, operStatus,implStatus }}) => {
       let pstatus,sstatus
       console.log(percent)
       switch(operStatus){
-        case OPER_STATUS.paused:
+        case OPER_STATUS.pause:
           sstatus='暂停中'
           break
         case OPER_STATUS.new:
@@ -160,7 +162,7 @@ class TaskList extends PureComponent {
         case OPER_STATUS.complete:
           sstatus='已完成'
           break
-        case OPER_STATUS.implement:
+        case OPER_STATUS.run:
           sstatus='进行中'
           break
         default:
@@ -171,7 +173,12 @@ class TaskList extends PureComponent {
           pstatus='exception'
           sstatus='出错了'
           break
-        case IMPL_STATUS.normal:
+        case IMPL_STATUS.waiting:
+          pstatus='normal'
+          if (sstatus!='新任务')
+            sstatus='等待中'
+          break
+        case IMPL_STATUS.running:
           pstatus='normal'
           break
         case IMPL_STATUS.complete:
@@ -273,7 +280,7 @@ class TaskList extends PureComponent {
                   item.description=`用户${item.user}有点懒，什么描述都没添加。`
                 let actionOption=item.user==localStorage.getItem('currentUser')?
                 <div style={{width:100}}>
-                    {item.operStatus!=OPER_STATUS.implement?
+                    {item.operStatus!=OPER_STATUS.run?
                     <FaPlayCircle 
                       style={{fontSize:playBtnOutLook(index).size,color:playBtnOutLook(index).color}}
                       onMouseEnter={()=> this.setState( {mouseOverPlayBtnIndex:index})}                      
@@ -281,10 +288,10 @@ class TaskList extends PureComponent {
                       onClick={()=>{
                         
                         if(item.operStatus==OPER_STATUS.new){
-                          this.setState({modalVisible:true,selectedTask:{id:item._id,targetList:item.targetList,plugin:item.plugin}})
+                          this.setState({modalVisible:true,selectedTask:{id:item._id,name:item.name,targetList:item.targetList,plugin:item.plugin}})
                           dispatch({type:'node/get'})
                         }
-                        else if (item.operStatus==OPER_STATUS.paused){
+                        else if (item.operStatus==OPER_STATUS.pause){
                           dispatch({type:'task/resume',taskId:item._id})
                         }
                         else

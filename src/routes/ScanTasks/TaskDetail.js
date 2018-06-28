@@ -90,7 +90,7 @@ export default class TaskDetail extends PureComponent {
                 implStatus='完成'
                 break
               default:
-                implcStatus='正常'  
+                implStatus='正常'  
             }
             if(v.zmap==0)
               implStatus='执行zmap'

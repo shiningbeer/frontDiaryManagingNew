@@ -1,7 +1,7 @@
 import { stringify } from 'qs';
 import fetch from 'dva/fetch';
 import request from '../utils/request';
-const urlbase='http://173.199.118.9:1978'
+const urlbase='http://localhost:1978'
 var myRequest = (url, option) => {
     let newOption={
         ...option,
