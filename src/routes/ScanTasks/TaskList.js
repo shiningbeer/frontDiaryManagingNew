@@ -134,7 +134,14 @@ class TaskList extends PureComponent {
         onCancel() {},
       });
     }
-    
+    const TASK_STATUS={
+      new:'new',
+      runZmap:'runZmap',
+      runScan:'runScan',
+      pause:'pause',
+      complete:'complete',
+      delete:'delete'
+    }
 
     const OPER_STATUS = {
       new: 'new',
