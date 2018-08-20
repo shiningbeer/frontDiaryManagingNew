@@ -25,7 +25,7 @@ class Step2 extends React.PureComponent {
     const onPrev = () => {
       dispatch(routerRedux.push('/task/newtask/step1'));
     };
-    
+   console.log(target) 
     const {targetList,numOfChecked}=target
     const height=window.screen.height/3
     const onValidateForm = (e) => {
@@ -38,8 +38,8 @@ class Step2 extends React.PureComponent {
       let choosedTargetList=[];
       for(var item of targetList){
         if(item.checked){
-          let {_id,name}=item
-          var target={_id,name}
+          let {_id,name,lines}=item
+          var target={_id,name,lines}
           choosedTargetList.push(target)
         }
       }
