@@ -134,68 +134,17 @@ class TaskList extends PureComponent {
         onCancel() {},
       });
     }
-    const TASK_STATUS={
-      new:'new',
-      runZmap:'runZmap',
-      runScan:'runScan',
-      pause:'pause',
-      complete:'complete',
-      delete:'delete'
-    }
 
-    const OPER_STATUS = {
-      new: 'new',
-      run:'run',
-      pause:'pause',
-      complete:'complete',
-      delete:'delete'
-    }
-  const IMPL_STATUS={
-    wrong:'wrong',  
-    waiting:'waiting',
-    running:'running',
-    complete:'complete',
-  }
-    const ListContent = ({ data: { user, createdAt, percent, operStatus,implStatus }}) => {
-      let pstatus,sstatus
-      console.log(percent)
-      switch(operStatus){
-        case OPER_STATUS.pause:
-          sstatus='暂停中'
-          break
-        case OPER_STATUS.new:
-          sstatus='新任务'
-          break
-        case OPER_STATUS.complete:
-          sstatus='已完成'
-          break
-        case OPER_STATUS.run:
-          sstatus='进行中'
-          break
-        default:
-          sstatus='进行中'
-      }
-      switch(implStatus){
-        case IMPL_STATUS.wrong:
-          pstatus='exception'
-          sstatus='出错了'
-          break
-        case IMPL_STATUS.waiting:
-          pstatus='normal'
-          if (sstatus!='新任务')
-            sstatus='等待中'
-          break
-        case IMPL_STATUS.running:
-          pstatus='normal'
-          break
-        case IMPL_STATUS.complete:
-          pstatus='success'
-          sstatus='已完成'
-          break
-        default:
-        pstatus='exception'
-      }
-
+    const ListContent = ({ data: { user, createdAt,goWrong,zmapComplete,zmapProgress,zmapTotal,scanTotal,scanProgress ,scanComplete}}) => {
+      let pstatus=goWrong?'exception':'normal'
+      if (scanComplete)      
+        pstatus='sucess'
+      let showProgress=zmapComplete?'扫描进度':'预处理进度'
+      let zmapPercent=zmapProgress*100/zmapTotal
+      let scanPercent=scanProgress*100/scanTotal
+      let percent=zmapComplete?zmapPercent:scanPercent
+      
+     
       return(
       <div className={styles.listContent}>
         <div className={styles.listContentItem}>
@@ -208,11 +157,8 @@ class TaskList extends PureComponent {
           <p>{moment(createdAt).format('YYYY-MM-DD HH:mm')}</p>
         </div>
         <div className={styles.listContentItem}>
-          <Progress percent={parseFloat(percent.toFixed(1))} status={pstatus} strokeWidth={6} style={{ width: 120 }} />
-        </div>
-        <div className={styles.listContentItem}>
-          <span>状态</span>
-          <p>{sstatus}</p>
+          <span>{showProgress}</span>
+          <p><Progress percent={parseFloat(percent.toFixed(1))} status={pstatus} strokeWidth={6} style={{ width: 120 }} /></p>
         </div>
       </div>
     )};
@@ -287,18 +233,18 @@ class TaskList extends PureComponent {
                   item.description=`用户${item.user}有点懒，什么描述都没添加。`
                 let actionOption=item.user==localStorage.getItem('currentUser')?
                 <div style={{width:100}}>
-                    {item.operStatus!=OPER_STATUS.run?
+                    {item.paused?
                     <FaPlayCircle 
                       style={{fontSize:playBtnOutLook(index).size,color:playBtnOutLook(index).color}}
                       onMouseEnter={()=> this.setState( {mouseOverPlayBtnIndex:index})}                      
                       onMouseLeave={()=> this.setState( {mouseOverPlayBtnIndex:-1})}
                       onClick={()=>{
                         
-                        if(item.operStatus==OPER_STATUS.new){
+                        if(item.brandNew){
                           this.setState({modalVisible:true,selectedTask:{id:item._id,name:item.name,targetList:item.targetList,plugin:item.plugin}})
                           dispatch({type:'node/get'})
                         }
-                        else if (item.operStatus==OPER_STATUS.pause){
+                        else if (item.paused){
                           dispatch({type:'task/resume',taskId:item._id})
                         }
                         else
@@ -309,17 +255,28 @@ class TaskList extends PureComponent {
                       style={{fontSize:playBtnOutLook(index).size,color:playBtnOutLook(index).color}}
                       onMouseEnter={()=> this.setState( {mouseOverPlayBtnIndex:index})}                      
                       onMouseLeave={()=> this.setState( {mouseOverPlayBtnIndex:-1})}
-                      onClick={()=>{dispatch({type:'task/pause',taskId:item._id})}}
+                      onClick={()=>{
+                        dispatch({type:'task/pause',taskId:item._id})
+                        if(item.zmapDoing)
+                          message.warning('目前正在预处理，任务将在预处理后暂停！')
+                      }}
                     />}
                     <FaTrashO 
                       style={{fontSize:delBtnOutLook(index).size,color:delBtnOutLook(index).color}}
-                      onClick={()=>showConfirm(item._id,item.name)}
+                      onClick={()=>{
+                       
+                          showConfirm(item._id,item.name)
+                          if(item.zmapDoing)
+                            message.warning('目前正在预处理，即使任务删除，预处理还是会执行完成。')
+                      }}
+
+
                       onMouseEnter={()=> this.setState( {mouseOverDelBtnIndex:index})}                      
                       onMouseLeave={()=> this.setState( {mouseOverDelBtnIndex:-1})}
                     />
                 </div>:
                     <div style={{width:100}}>
-                    {item.status!=2?
+                    {!item.paused?
                     <FaPlayCircle 
                       style={{fontSize:playBtnOutLook(index).size,color:'grey'}}
                       />:

@@ -59,22 +59,17 @@ export default class TaskDetail extends PureComponent {
           onCancel={onModalCancel}
           maskClosable={false}
         >
-          <div>
+          <div style={{wordWrap:'break-word'}}>
             {JSON.stringify(nodeTaskResult)}
           </div>
         </Modal>
         <Card bordered={false}>
-          <div>
+          <div style={{wordWrap:'break-word'}}>
             {JSON.stringify(taskDetail)}
           </div>
           <Divider style={{ marginBottom: 32 }} />
           {nodeTasks.map((v, k) => {
-            let syncStatus, implStatus
-            syncStatus = v.syncStatus
-            implStatus = v.implStatus
-            if (v.zmap == 0)
-              implStatus = '执行zmap'
-
+            delete v.zmapRange
             return (
 
               <div key={k}>
@@ -88,14 +83,11 @@ export default class TaskDetail extends PureComponent {
                     payload: { nodeTaskId: v._id, nodeId: v.node._id, skip: 0, limit: 10 },
                   });
                 }}>查看结果</a></p>} style={{ marginBottom: 32 }} >
-                  <Description term="IP数量">{v.ipTotal}</Description>
-                  <Description term="IP完成数">{v.progress}</Description>
-
-                  <Description term="执行状态">{implStatus}</Description>
-                  <Description term="同步状态">{syncStatus}</Description>
-                  <Description term="错误信息">{v.errMsg}</Description>
-                  <Description></Description>
-
+                {/* <Description term="IP数量"></Description> */}
+                <div style={{wordWrap:'break-word'}}>
+                {JSON.stringify(v)}
+                </div>
+                
                 </DescriptionList>
 
                 <Divider style={{ marginBottom: 32 }} />
