@@ -142,7 +142,7 @@ class TaskList extends PureComponent {
       let showProgress=zmapComplete?'扫描进度':'预处理进度'
       let zmapPercent=zmapProgress*100/zmapTotal
       let scanPercent=scanProgress*100/scanTotal
-      let percent=zmapComplete?zmapPercent:scanPercent
+      let percent=zmapComplete?scanPercent:zmapPercent
       
      
       return(
