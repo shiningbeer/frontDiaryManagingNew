@@ -240,7 +240,7 @@ class TaskList extends PureComponent {
                       onMouseLeave={()=> this.setState( {mouseOverPlayBtnIndex:-1})}
                       onClick={()=>{
                         
-                        if(item.brandNew){
+                        if(!item.started){
                           this.setState({modalVisible:true,selectedTask:{id:item._id,name:item.name,targetList:item.targetList,plugin:item.plugin}})
                           dispatch({type:'node/get'})
                         }
