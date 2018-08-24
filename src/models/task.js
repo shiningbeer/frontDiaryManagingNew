@@ -57,6 +57,11 @@ export default {
         nodeTaskResult:result
       });
     },
+    *saveAllResult({ payload }, { put,call }){
+      const re =yield call(task.getAllResult, payload)
+      console.log(re)
+      message.success('汇聚成功，共'+re+'个结果！') 
+    },
     *del({payload}, { call, put }) {
       const re =yield call(task.del,{taskId:payload});
       re=='ok'?message.success('删除任务成功'):message.warning('删除任务失败')

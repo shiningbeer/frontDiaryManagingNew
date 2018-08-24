@@ -139,6 +139,10 @@ export const task={
     method: 'POST',
     body:params
   }),
+  getAllResult:async (params)=>request(urlbase+'/task/getAllResult', {    
+    method: 'POST',
+    body:params
+  }),
   del:async (params)=>request(urlbase+'/task/delete', {
     method: 'POST',
     body:params

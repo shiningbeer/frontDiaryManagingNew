@@ -67,6 +67,14 @@ export default class TaskDetail extends PureComponent {
           <div>
             {JSON.stringify(taskDetail)}
           </div>
+          <div>
+          <p><a onClick={() => {                  
+                  this.props.dispatch({
+                    type: 'task/saveAllResult',
+                    payload:nodeTasks                 
+                  });
+                }}>结果汇聚</a></p>
+            </div>
           <Divider style={{ marginBottom: 32 }} />
           {nodeTasks.map((v, k) => {
             let syncStatus, implStatus
