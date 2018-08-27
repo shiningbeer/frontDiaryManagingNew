@@ -64,7 +64,7 @@ export default class TaskDetail extends PureComponent {
           </div>
         </Modal>
         <Card bordered={false}>
-          <div style={{wordBreak:'break-word'}}>
+          <div style={{wordBreak:'break-word',wordWrap:'break-word'}}>
             {JSON.stringify(taskDetail)}
           </div>
           <div>
