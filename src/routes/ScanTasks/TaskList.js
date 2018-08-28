@@ -52,6 +52,7 @@ class TaskList extends PureComponent {
           choosedNodeList.push(node)
         }
       }
+      console.log(choosedNodeList)
       dispatch({
         type: 'task/start',
         payload: {task:this.state.selectedTask,nodeList:choosedNodeList},
@@ -118,7 +119,7 @@ class TaskList extends PureComponent {
 
 
     const confirm = Modal.confirm;
-    function showConfirm(id,name) {
+    function showConfirm(_id,name) {
       confirm({
         title: '确认删除',
         content: `确认要删除任务"${name}"吗？`,
@@ -128,7 +129,7 @@ class TaskList extends PureComponent {
           // }).catch(() => console.log('Oops errors!'));
           dispatch({
             type: 'task/del',
-            payload: id,
+            payload: _id,
           });
         },
         onCancel() {},
@@ -241,7 +242,7 @@ class TaskList extends PureComponent {
                       onClick={()=>{
                         
                         if(!item.started){
-                          this.setState({modalVisible:true,selectedTask:{id:item._id,name:item.name,targetList:item.targetList,plugin:item.plugin}})
+                          this.setState({modalVisible:true,selectedTask:{_id:item._id,name:item.name,targetList:item.targetList,plugin:item.plugin}})
                           dispatch({type:'node/get'})
                         }
                         else if (item.paused){
