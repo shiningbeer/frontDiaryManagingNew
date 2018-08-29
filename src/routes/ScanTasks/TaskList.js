@@ -20,6 +20,12 @@ class TaskList extends PureComponent {
       type: 'task/get',
       payload: {},
     });
+    setInterval(() => {
+      this.props.dispatch({
+        type: 'task/get',
+        payload: {},
+    });
+    }, 1000);
   }
   state={
     mouseOverPlayBtnIndex:-1,
@@ -221,7 +227,7 @@ class TaskList extends PureComponent {
             <List
               size="large"
               rowKey="id"
-              loading={loading}
+              // loading={loading}
               
               pagination={paginationProps}
               dataSource={taskList}
