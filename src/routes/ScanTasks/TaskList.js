@@ -20,18 +20,27 @@ class TaskList extends PureComponent {
       type: 'task/get',
       payload: {},
     });
-    setInterval(() => {
+    let timer=setInterval(() => {
       this.props.dispatch({
         type: 'task/get',
         payload: {},
     });
     }, 1000);
+    this.setState({
+      timer
+    })
+  }
+  componentWillUnmount(){
+    if(this.state.timer!=null){
+      clearInterval(this.state.timer)
+    }
   }
   state={
     mouseOverPlayBtnIndex:-1,
     mouseOverDelBtnIndex:-1,
     modalVisible:false,
     selectedTask:{},
+    timer:null,
   }
   render() {
     const {taskList,node,loading,dispatch } = this.props;

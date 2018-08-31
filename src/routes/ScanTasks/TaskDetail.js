@@ -24,10 +24,10 @@ export default class TaskDetail extends PureComponent {
       type: 'task/getDetail',
       payload: { id: this.props.match.params.id },
     });
-    this.props.dispatch({
-      type: 'task/getNodeTasks',
-      payload: { id: this.props.match.params.id },
-    });
+    // this.props.dispatch({
+    //   type: 'task/getNodeTasks',
+    //   payload: { id: this.props.match.params.id },
+    // });
   }
   state = {
     modalVisible: false,
