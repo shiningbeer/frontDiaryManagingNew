@@ -58,7 +58,7 @@ export default class TaskDetail extends PureComponent {
           onOk={onModalOk}
           onCancel={onModalCancel}
           maskClosable={false}
-        >
+        > 
           <div style={{wordWrap:'break-word'}}>
             {JSON.stringify(nodeTaskResult)}
           </div>
