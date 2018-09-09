@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import moment from 'moment';
 import index, { connect } from 'dva';
-import { message,Checkbox,Modal,List, Card, Row, Col, Radio, Input, Progress, Button, Icon, Dropdown, Menu, Avatar } from 'antd';
-import {FaPauseCircle,FaPlayCircle,FaTrashO} from 'react-icons/lib/fa'
+import { message, Checkbox, Modal, List, Card, Row, Col, Radio, Input, Progress, Button, Icon, Dropdown, Menu, Avatar } from 'antd';
+import { FaPauseCircle, FaPlayCircle, FaTrashO } from 'react-icons/lib/fa'
 import crypto from 'crypto'
 import Identicon from 'identicon.js'
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
@@ -20,31 +20,31 @@ class TaskList extends PureComponent {
       type: 'task/get',
       payload: {},
     });
-    let timer=setInterval(() => {
+    let timer = setInterval(() => {
       this.props.dispatch({
         type: 'task/get',
         payload: {},
-    });
+      });
     }, 1000);
     this.setState({
       timer
     })
   }
-  componentWillUnmount(){
-    if(this.state.timer!=null){
+  componentWillUnmount() {
+    if (this.state.timer != null) {
       clearInterval(this.state.timer)
     }
   }
-  state={
-    mouseOverPlayBtnIndex:-1,
-    mouseOverDelBtnIndex:-1,
-    modalVisible:false,
-    selectedTask:{},
-    timer:null,
+  state = {
+    mouseOverPlayBtnIndex: -1,
+    mouseOverDelBtnIndex: -1,
+    modalVisible: false,
+    selectedTask: {},
+    timer: null,
   }
   render() {
-    const {taskList,node,loading,dispatch } = this.props;
-    const {nodeList,numOfChecked,checkedAll}=node
+    const { taskList, node, loading, dispatch } = this.props;
+    const { nodeList, numOfChecked, checkedAll } = node
 
     const Info = ({ title, value, bordered }) => (
       <div className={styles.headerInfo}>
@@ -53,57 +53,57 @@ class TaskList extends PureComponent {
         {bordered && <em />}
       </div>
     );
-    const onModalOk=()=>{
-      if(numOfChecked==0){
-        message.config({top:window.screen.height/3})
+    const onModalOk = () => {
+      if (numOfChecked == 0) {
+        message.config({ top: window.screen.height / 3 })
         message.error('请至少选择一个节点！')
         return
       }
-      let choosedNodeList=[];
-      for(var item of nodeList){
-        if(item.checked){
-          let {_id,name}=item
-          var node={_id,name}
+      let choosedNodeList = [];
+      for (var item of nodeList) {
+        if (item.checked) {
+          let { _id, name } = item
+          var node = { _id, name }
           choosedNodeList.push(node)
         }
       }
       console.log(choosedNodeList)
       dispatch({
         type: 'task/start',
-        payload: {task:this.state.selectedTask,nodeList:choosedNodeList},
+        payload: { task: this.state.selectedTask, nodeList: choosedNodeList },
       });
-      dispatch({type:'node/checkedAll',checked:false})
+      dispatch({ type: 'node/checkedAll', checked: false })
       this.setState({
-        modalVisible:false,
-        selectedTask:{}
+        modalVisible: false,
+        selectedTask: {}
       })
     }
-    const onModalCancel=()=>{
+    const onModalCancel = () => {
       this.setState({
-        modalVisible:false,
-        selectedTask:{}
+        modalVisible: false,
+        selectedTask: {}
       })
-      dispatch({type:'node/checkedAll',checked:false})
+      dispatch({ type: 'node/checkedAll', checked: false })
     }
-    const playBtnOutLook=(index)=>index==this.state.mouseOverPlayBtnIndex?
-          {
-            size:30,
-            color:'red'
-          }:
-          {
-            size:30,
-            color:'dodgerblue'
-          }
-    const delBtnOutLook=(index)=>index==this.state.mouseOverDelBtnIndex?
-          {
-            size:30,
-            color:'red'
-          }:
-          {
-            size:30,
-            color:'dodgerblue'
-          }
-    
+    const playBtnOutLook = (index) => index == this.state.mouseOverPlayBtnIndex ?
+      {
+        size: 30,
+        color: 'red'
+      } :
+      {
+        size: 30,
+        color: 'dodgerblue'
+      }
+    const delBtnOutLook = (index) => index == this.state.mouseOverDelBtnIndex ?
+      {
+        size: 30,
+        color: 'red'
+      } :
+      {
+        size: 30,
+        color: 'dodgerblue'
+      }
+
 
     const extraContent = (
       <div className={styles.extraContent}>
@@ -111,7 +111,7 @@ class TaskList extends PureComponent {
           <RadioButton value="all">全部</RadioButton>
           <RadioButton value="progress">我的</RadioButton>
         </RadioGroup>
-        <RadioGroup defaultValue="all" style={{marginLeft:10}}>
+        <RadioGroup defaultValue="all" style={{ marginLeft: 10 }}>
           <RadioButton value="all">全部</RadioButton>
           <RadioButton value="progress">未开始</RadioButton>
           <RadioButton value="waiting">进行中</RadioButton>
@@ -134,7 +134,7 @@ class TaskList extends PureComponent {
 
 
     const confirm = Modal.confirm;
-    function showConfirm(_id,name) {
+    function showConfirm(_id, name) {
       confirm({
         title: '确认删除',
         content: `确认要删除任务"${name}"吗？`,
@@ -147,67 +147,74 @@ class TaskList extends PureComponent {
             payload: _id,
           });
         },
-        onCancel() {},
+        onCancel() { },
       });
     }
 
-    const ListContent = ({ data: { user, createdAt,goWrong,zmapComplete,zmapProgress,zmapTotal,scanTotal,scanProgress ,scanComplete}}) => {
-      let pstatus=goWrong?'exception':'normal'
-      if (scanComplete)      
-        pstatus='sucess'
-      let showProgress=zmapComplete?'扫描进度':'预处理进度'
-      let zmapPercent=zmapProgress*100/zmapTotal
-      let scanPercent=scanProgress*100/scanTotal
-      let percent=zmapComplete?scanPercent:zmapPercent
-      
-     
-      return(
-      <div className={styles.listContent}>
-        <div className={styles.listContentItem}>
-          <span>用户</span>
-          <p>{user}</p>
-        </div>
-        
-        <div className={styles.listContentItem}>
-          <span>创建时间</span>
-          <p>{moment(createdAt).format('YYYY-MM-DD HH:mm')}</p>
-        </div>
-        <div className={styles.listContentItem}>
-          <span>{showProgress}</span>
-          <p><Progress percent={parseFloat(percent.toFixed(1))} status={pstatus} strokeWidth={6} style={{ width: 120 }} /></p>
-        </div>
-      </div>
-    )};
+    const ListContent = ({ data: { type, stage, user, createdAt, goWrong, complete, progress, total } }) => {
+      let pstatus = goWrong ? 'exception' : 'normal'
+      if (complete)
+        pstatus = 'sucess'
+      let showProgress = ''
+      if (type == 'zmapScan')
+        showProgress = 'zmap扫描进度'
+      else if (type == 'pluginScan')
+        showProgress = '插件扫描进度'
+      else if (stage == 'zmap')
+        showProgress = 'zmap扫描进度'
+      else if (stage == 'plugin')
+        showProgress = '插件扫描进度'
+      let percent = progress * 100 / total
 
-    
+
+      return (
+        <div className={styles.listContent}>
+          <div className={styles.listContentItem}>
+            <span>用户</span>
+            <p>{user}</p>
+          </div>
+
+          <div className={styles.listContentItem}>
+            <span>创建时间</span>
+            <p>{moment(createdAt).format('YYYY-MM-DD HH:mm')}</p>
+          </div>
+          <div className={styles.listContentItem}>
+            <span>{showProgress}</span>
+            <p><Progress percent={parseFloat(percent.toFixed(1))} status={pstatus} strokeWidth={6} style={{ width: 120 }} /></p>
+          </div>
+        </div>
+      )
+    };
+
+
 
     return (
       <PageHeaderLayout>
-        <div className={styles.standardList} style={{marginLeft:30,marginRight:30}}>
-        <Modal
-          title="选择扫描节点"
-          visible={this.state.modalVisible}
-          onOk={onModalOk}
-          onCancel={onModalCancel}
-          maskClosable={false}
-        >
-           <Checkbox
-        onChange={(e)=>{dispatch({type:'node/checkedAll',checked:e.target.checked})}}
-        checked={checkedAll}
-      ><strong style={{fontSize:16,color:'dodgerblue'}}>全选</strong></Checkbox>
-      <Row gutter={8} style={{ marginBottom: 8 }}>
-        {nodeList.map((v,k)=>(
-          <Col span={12} key={k}>
-          <Card style={{ marginTop: 16 }}>
-              <Checkbox checked={v.checked} onClick={()=>{dispatch({type:'node/checkedOne',index:k})}}><strong style={{fontSize:16}}>{v.name}</strong></Checkbox>
-          </Card>
-          </Col>
-        )
+        <div className={styles.standardList} style={{ marginLeft: 30, marginRight: 30 }}>
+          <Modal
+            title="选择扫描节点"
+            visible={this.state.modalVisible}
+            onOk={onModalOk}
+            onCancel={onModalCancel}
+            maskClosable={false}
+          >
+            <Checkbox
+              onChange={(e) => { dispatch({ type: 'node/checkedAll', checked: e.target.checked }) }}
+              checked={checkedAll}
+            ><strong style={{ fontSize: 16, color: 'dodgerblue' }}>全选</strong></Checkbox>
+            <Row gutter={8} style={{ marginBottom: 8 }}>
+              {nodeList.map((v, k) => (
+                <Col span={12} key={k}>
+                  <Card style={{ marginTop: 16 }}>
+                    <Checkbox checked={v.checked} onClick={() => { dispatch({ type: 'node/checkedOne', index: k }) }}><strong style={{ fontSize: 16 }}>{v.name}</strong></Checkbox>
+                  </Card>
+                </Col>
+              )
 
-        )}
+              )}
 
-      </Row>
-        </Modal>
+            </Row>
+          </Modal>
           <Card bordered={false}>
             <Row>
               <Col sm={8} xs={24}>
@@ -230,92 +237,89 @@ class TaskList extends PureComponent {
             bodyStyle={{ padding: '0 32px 40px 32px' }}
             extra={extraContent}
           >
-            <Button onClick={()=>{dispatch(routerRedux.push('/task/newtask'))}} type="dashed" style={{ width: '100%', marginBottom: 8 }} icon="plus">
+            <Button onClick={() => { dispatch(routerRedux.push('/task/newtask')) }} type="dashed" style={{ width: '100%', marginBottom: 8 }} icon="plus">
               添加新任务
             </Button>
             <List
               size="large"
               rowKey="id"
               // loading={loading}
-              
+
               pagination={paginationProps}
               dataSource={taskList}
-              renderItem={(item,index) => {
+              renderItem={(item, index) => {
                 let hash = crypto.createHash('md5')
                 hash.update(item.name); // 传入用户名
                 let imgData = new Identicon(hash.digest('hex')).toString()
-                let imgUrl = 'data:image/png;base64,'+imgData
-                if(item.description=='')
-                  item.description=`用户${item.user}有点懒，什么描述都没添加。`
-                let actionOption=item.user==localStorage.getItem('currentUser')?
-                <div style={{width:100}}>
-                    {item.paused?
-                    <FaPlayCircle 
-                      style={{fontSize:playBtnOutLook(index).size,color:playBtnOutLook(index).color}}
-                      onMouseEnter={()=> this.setState( {mouseOverPlayBtnIndex:index})}                      
-                      onMouseLeave={()=> this.setState( {mouseOverPlayBtnIndex:-1})}
-                      onClick={()=>{
-                        
-                        if(!item.started){
-                          this.setState({modalVisible:true,selectedTask:{_id:item._id,name:item.name,targetList:item.targetList,plugin:item.plugin}})
-                          dispatch({type:'node/get'})
-                        }
-                        else if (item.paused){
-                          dispatch({type:'task/resume',taskId:item._id})
-                        }
-                        else
-                        message.warning('任务已经完成！')
-                    }}
-                      />:
-                    <FaPauseCircle 
-                      style={{fontSize:playBtnOutLook(index).size,color:playBtnOutLook(index).color}}
-                      onMouseEnter={()=> this.setState( {mouseOverPlayBtnIndex:index})}                      
-                      onMouseLeave={()=> this.setState( {mouseOverPlayBtnIndex:-1})}
-                      onClick={()=>{
-                        dispatch({type:'task/pause',taskId:item._id})
-                        if(item.zmapDoing)
-                          message.warning('目前正在预处理，任务将在预处理后暂停！')
-                      }}
-                    />}
-                    <FaTrashO 
-                      style={{fontSize:delBtnOutLook(index).size,color:delBtnOutLook(index).color}}
-                      onClick={()=>{
-                       
-                          showConfirm(item._id,item.name)
-                          if(item.zmapDoing)
-                            message.warning('目前正在预处理，即使任务删除，预处理还是会执行完成。')
+                let imgUrl = 'data:image/png;base64,' + imgData
+                if (item.description == '')
+                  item.description = `用户${item.user}有点懒，什么描述都没添加。`
+                let actionOption = item.user == localStorage.getItem('currentUser') ?
+                  <div style={{ width: 100 }}>
+                    {item.paused ?
+                      <FaPlayCircle
+                        style={{ fontSize: playBtnOutLook(index).size, color: playBtnOutLook(index).color }}
+                        onMouseEnter={() => this.setState({ mouseOverPlayBtnIndex: index })}
+                        onMouseLeave={() => this.setState({ mouseOverPlayBtnIndex: -1 })}
+                        onClick={() => {
+
+                          if (!item.started) {
+                            this.setState({ modalVisible: true, selectedTask: { _id: item._id, name: item.name, targetList: item.targetList, plugin: item.plugin } })
+                            dispatch({ type: 'node/get' })
+                          }
+                          else if (item.paused) {
+                            dispatch({ type: 'task/resume', taskId: item._id })
+                          }
+                          else
+                            message.warning('任务已经完成！')
+                        }}
+                      /> :
+                      <FaPauseCircle
+                        style={{ fontSize: playBtnOutLook(index).size, color: playBtnOutLook(index).color }}
+                        onMouseEnter={() => this.setState({ mouseOverPlayBtnIndex: index })}
+                        onMouseLeave={() => this.setState({ mouseOverPlayBtnIndex: -1 })}
+                        onClick={() => {
+                          dispatch({ type: 'task/pause', taskId: item._id })
+                        }}
+                      />}
+                    <FaTrashO
+                      style={{ fontSize: delBtnOutLook(index).size, color: delBtnOutLook(index).color }}
+                      onClick={() => {
+
+                        showConfirm(item._id, item.name)
                       }}
 
 
-                      onMouseEnter={()=> this.setState( {mouseOverDelBtnIndex:index})}                      
-                      onMouseLeave={()=> this.setState( {mouseOverDelBtnIndex:-1})}
+                      onMouseEnter={() => this.setState({ mouseOverDelBtnIndex: index })}
+                      onMouseLeave={() => this.setState({ mouseOverDelBtnIndex: -1 })}
                     />
-                </div>:
-                    <div style={{width:100}}>
-                    {!item.paused?
-                    <FaPlayCircle 
-                      style={{fontSize:playBtnOutLook(index).size,color:'grey'}}
-                      />:
-                    <FaPauseCircle 
-                      style={{fontSize:playBtnOutLook(index).size,color:'grey'}}
-                    />}
-                    <FaTrashO 
-                      style={{fontSize:delBtnOutLook(index).size,color:'grey'}}
+                  </div> :
+                  <div style={{ width: 100 }}>
+                    {!item.paused ?
+                      <FaPlayCircle
+                        style={{ fontSize: playBtnOutLook(index).size, color: 'grey' }}
+                      /> :
+                      <FaPauseCircle
+                        style={{ fontSize: playBtnOutLook(index).size, color: 'grey' }}
+                      />}
+                    <FaTrashO
+                      style={{ fontSize: delBtnOutLook(index).size, color: 'grey' }}
                     />
-                </div>
+                  </div>
                 return (
-                <List.Item
-                // onMouseLeave={()=>this.setState({mouseOver:false})}
-                  actions={[<a href={`/#/task/taskdetail/${item._id}`}>详细</a>, actionOption]}
-                >
-                  <List.Item.Meta
-                    avatar={<Avatar src={imgUrl} shape="circle" size="small" />}
-                    title={item.name}
-                    description={item.description}
-                  />
-                  <ListContent data={item}/>
-                </List.Item>
-              )}}
+                  <List.Item
+                    // onMouseLeave={()=>this.setState({mouseOver:false})}
+                    actions={[<a href={`/#/task/taskdetail/${item._id}`}>详细</a>, actionOption]}
+                  >
+                    <List.Item.Meta
+                      avatar={<Avatar src={imgUrl} shape="circle" size="small" />}
+                      title={item.name}
+                      description={item.description}
+                    />
+                    <ListContent data={item} />
+                  </List.Item>
+                )
+              }}
             />
           </Card>
         </div>
@@ -323,8 +327,8 @@ class TaskList extends PureComponent {
     );
   }
 }
-export default connect(({ task, node,loading }) => ({
-  taskList:task.taskList,
-  node:node,
+export default connect(({ task, node, loading }) => ({
+  taskList: task.taskList,
+  node: node,
   loading: loading.effects['task/get'],
 }))(TaskList);
