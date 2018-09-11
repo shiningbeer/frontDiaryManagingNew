@@ -153,8 +153,6 @@ class TaskList extends PureComponent {
 
     const ListContent = ({ data: { type, stage, user, createdAt, goWrong, complete, progress, total } }) => {
       let pstatus = goWrong ? 'exception' : 'normal'
-      if (complete)
-        pstatus = 'sucess'
       let showProgress = ''
       if (type == 'zmapScan')
         showProgress = 'zmap扫描进度'
@@ -168,7 +166,10 @@ class TaskList extends PureComponent {
       }
       let percent = progress * 100 / total
       
-
+      if (complete&&stage=='plugin'){
+        pstatus = 'success'
+        showProgress="任务完成！"
+      }
       return (
         <div className={styles.listContent}>
           <div className={styles.listContentItem}>
