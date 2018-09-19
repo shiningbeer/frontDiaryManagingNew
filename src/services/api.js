@@ -131,11 +131,8 @@ export const task={
     method: 'POST',
     body:params
   }),
-  getNodeTasks:async (params)=>request(urlbase+'/task/getNodeTasks', {
-    method: 'POST',
-    body:params
-  }),
-  getResult:async (params)=>request(urlbase+'/task/nodeTaskResult', {
+
+  getResult:async (params)=>request(urlbase+'/task/getResult', {
     method: 'POST',
     body:params
   }),
@@ -155,6 +152,11 @@ export const task={
     method: 'POST',
     body:params
   }),
+  resultToES:async (params)=>request(urlbase+'/task/resultToES', {
+    method: 'POST',
+    body:params
+  }),
+  
 }
 
 

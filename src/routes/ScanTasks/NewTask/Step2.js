@@ -45,7 +45,7 @@ class Step2 extends React.PureComponent {
       }
       dispatch({
         type: 'task/saveStepData',
-        payload: {
+        stepData: {
           ...newTask,
           targetList:choosedTargetList
         },

@@ -18,12 +18,12 @@ class TaskList extends PureComponent {
   componentDidMount() {
     this.props.dispatch({
       type: 'task/get',
-      payload: {},
+      condition: {},
     });
     let timer = setInterval(() => {
       this.props.dispatch({
         type: 'task/get',
-        payload: {},
+        condition: {},
       });
     }, 1000);
     this.setState({
@@ -70,7 +70,8 @@ class TaskList extends PureComponent {
       console.log(choosedNodeList)
       dispatch({
         type: 'task/start',
-        payload: { task: this.state.selectedTask, nodeList: choosedNodeList },
+        taskId: this.state.selectedTask._id,
+        nodeList: choosedNodeList
       });
       dispatch({ type: 'node/checkedAll', checked: false })
       this.setState({
@@ -144,7 +145,7 @@ class TaskList extends PureComponent {
           // }).catch(() => console.log('Oops errors!'));
           dispatch({
             type: 'task/del',
-            payload: _id,
+            taskId: _id,
           });
         },
         onCancel() { },

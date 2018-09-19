@@ -1,17 +1,15 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import {
-  Form, Divider, Modal, Input, DatePicker, Select, Button, Card, InputNumber, Radio, Icon, Tooltip,
+  message, Form, Divider, Modal, Input, DatePicker, Select, Button, Card, InputNumber, Radio, Icon, Tooltip,
 } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import DescriptionList from '../../components/DescriptionList';
 
 const { Description } = DescriptionList;
-@connect(({ loading, task }) => ({
-  submitting: loading.effects['target/add'],
+@connect(({ task }) => ({
   taskDetail: task.taskDetail,
-  nodeTasks: task.nodeTasks,
-  nodeTaskResult: task.nodeTaskResult
+  taskResult: task.taskResult,
 
 }))
 
@@ -22,12 +20,9 @@ export default class TaskDetail extends PureComponent {
   componentDidMount() {
     this.props.dispatch({
       type: 'task/getDetail',
-      payload: { id: this.props.match.params.id },
+      taskId: this.props.match.params.id,
     });
-    // this.props.dispatch({
-    //   type: 'task/getNodeTasks',
-    //   payload: { id: this.props.match.params.id },
-    // });
+
   }
   state = {
     modalVisible: false,
@@ -35,7 +30,7 @@ export default class TaskDetail extends PureComponent {
   }
 
   render() {
-    const { submitting, taskDetail, nodeTasks, nodeTaskResult } = this.props;
+    const { taskDetail, taskResult } = this.props;
     const onModalOk = () => {
       this.setState({
         modalVisible: false,
@@ -53,53 +48,45 @@ export default class TaskDetail extends PureComponent {
     return (
       <PageHeaderLayout title="任务详细信息" content={<a href='/#/task/tasklist'>返回列表</a>}>
         <Modal
-          title={`任务${taskDetail.name}在节点${this.state.currentNode}上的扫描结果`}
+          title={`当前扫描结果`}
           visible={this.state.modalVisible}
           onOk={onModalOk}
           onCancel={onModalCancel}
           maskClosable={false}
-        > 
-          <div style={{wordWrap:'break-word'}}>
-            {JSON.stringify(nodeTaskResult)}
+        >
+          <div style={{ wordWrap: 'break-word' }}>
+            {JSON.stringify(taskResult)}
           </div>
         </Modal>
         <Card bordered={false}>
-          <div style={{wordWrap:'break-word'}}>
+          <div style={{ wordWrap: 'break-word' }}>
             {JSON.stringify(taskDetail)}
+            <p></p>
+            <a onClick={() => {
+              this.setState({
+                modalVisible: true,
+              })
+              this.props.dispatch({
+                type: 'task/getTaskResult',
+                taskId: taskDetail._id,
+              });
+            }} style={{ marginRight: 60 }}>查看结果</a>
+            <a onClick={() => {
+              if(taskDetail.resultCollected!=true){
+                message.warning('结果没有存储完毕，无法导入！')
+                return
+              }
+              if (taskDetail.toES == true)
+                message.warning('请不要重复导入！')
+              else {
+                this.props.dispatch({
+                  type: 'task/resultToES',
+                  taskId: taskDetail._id,
+                })
+              }
+            }}>结果导入ES</a>
           </div>
           <Divider style={{ marginBottom: 32 }} />
-          {nodeTasks.map((v, k) => {
-            delete v.zmapRange
-            return (
-
-              <div key={k}>
-                <DescriptionList size="large" title={<p>{`工作节点：${v.node.name}-------`}<a onClick={() => {
-                  this.setState({
-                    modalVisible: true,
-                    currentNode: v.node.name,
-                  })
-                  this.props.dispatch({
-                    type: 'task/getNodeTaskResult',
-                    payload: { nodeTaskId: v._id, nodeId: v.node._id, skip: 0, limit: 10 },
-                  });
-                }}>查看结果</a></p>} style={{ marginBottom: 32 }} >
-                {/* <Description term="IP数量"></Description> */}
-                <div style={{wordWrap:'break-word'}}>
-                {JSON.stringify(v)}
-                </div>
-                
-                </DescriptionList>
-
-                <Divider style={{ marginBottom: 32 }} />
-
-              </div>
-            )
-          }
-
-          )}
-
-
-
         </Card>
       </PageHeaderLayout>
     );

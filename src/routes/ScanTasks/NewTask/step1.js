@@ -25,7 +25,7 @@ class Step1 extends React.PureComponent {
         if (!err) {
           dispatch({
             type: 'task/saveStepData',
-            payload: values,
+            stepData: values,
           });
           dispatch(routerRedux.push('/task/newtask/step2'));
         }
