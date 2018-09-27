@@ -7,7 +7,7 @@ import styles from './style.less';
 
 class Step4 extends React.PureComponent {
   render() {
-    const { dispatch, data,newTask } = this.props;
+    const { dispatch, newTask } = this.props;
     const onFinish = () => {
       dispatch(routerRedux.push('/task/newtask/step1'));
     };
@@ -16,6 +16,10 @@ class Step4 extends React.PureComponent {
         <Row>
           <Col span={8} className={styles.label}>任务名：</Col>
           <Col span={16}>{newTask.name}</Col>
+        </Row>
+        <Row>
+          <Col span={8} className={styles.label}>任务类型：</Col>
+          <Col span={16}>{newTask.type}</Col>
         </Row>
         <Row>
           <Col span={8} className={styles.label}>任务描述：</Col>
@@ -57,6 +61,5 @@ class Step4 extends React.PureComponent {
 }
 
 export default connect(({ form,task }) => ({
-  data: form.step,
   newTask:task.newTask
 }))(Step4);

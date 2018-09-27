@@ -108,7 +108,7 @@ class TaskList extends PureComponent {
 
     const extraContent = (
       <div className={styles.extraContent}>
-        <RadioGroup defaultValue="all">
+        <RadioGroup defaultValue="all" onChange={(e)=>{console.log(e)}}>
           <RadioButton value="all">全部</RadioButton>
           <RadioButton value="progress">我的</RadioButton>
         </RadioGroup>

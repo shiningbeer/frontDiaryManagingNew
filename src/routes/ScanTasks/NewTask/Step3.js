@@ -14,6 +14,7 @@ const formItemLayout = {
   },
 };
 
+@Form.create()
 class Step3 extends React.PureComponent {
   componentWillMount() {
     this.props.dispatch({
@@ -22,14 +23,15 @@ class Step3 extends React.PureComponent {
   }
   render() {
 
-    const { plugin, newTask, dispatch, submitting } = this.props;
+    const {form, plugin, newTask, dispatch, submitting } = this.props;
+    const { getFieldDecorator, validateFields } = form;
     const { pluginList, numOfChecked } = plugin
     const height = window.screen.height / 3
     const onPrev = () => {
       dispatch(routerRedux.push('/task/newtask/step2'));
     };
     const onValidateForm = (e) => {
-      if (numOfChecked == 0) {
+      if (newTask.type!='zmap'&&numOfChecked == 0) {
         message.config({ top: height })
         message.error('请至少选择一个插件！')
         return
@@ -44,14 +46,70 @@ class Step3 extends React.PureComponent {
             protocal: item.protocal
           })
       }
-      dispatch({
-        type: 'task/add',
-        newTask: {
-          ...newTask,
-          pluginList: choosedpluginList
-        },
-      });
+      validateFields((err,value)=>{
+        dispatch({
+          type: 'task/add',
+          newTask: {
+            ...newTask,
+            pluginList: choosedpluginList,
+            ...value
+          },
+        })
+      })
+
     };
+    const chooseToShow = () => {
+      console.log(newTask.type)
+      if (newTask.type == 'zmap') {
+        return (
+          <div>
+            <Form layout="horizontal" className={styles.stepForm} hideRequiredMark>
+
+              <Form.Item
+                {...formItemLayout}
+                label="扫描端口"
+              >
+                <Input.Group compact>
+
+                  {getFieldDecorator('port', {
+                    initialValue: '',
+                    rules: [
+                      { required: true, message: '请输入扫描端口',pattern:'[0-9]+'},
+                    ],
+                  })(
+                    <Input size='large' style={{ width: 'calc(100%)' }} placeholder="必填项，请输入要扫描的端口。" />
+                  )}
+                </Input.Group>
+
+              </Form.Item>)              
+            </Form>
+          </div>)
+      }
+      else {
+        return (
+          <div>
+            <Checkbox
+              onChange={(e) => { dispatch({ type: 'plugin/checkedAll', checked: e.target.checked }) }}
+            ><strong style={{ fontSize: 16, color: 'dodgerblue' }}>全选</strong></Checkbox>
+            <Row gutter={8} style={{ marginBottom: 8 }}>
+              {pluginList.map((v, k) => {
+                let disabled = false
+                if (v.protocal == '' || v.port == '')
+                  disabled = true
+                return (
+                  <Col span={12} key={k}>
+                    <Card style={{ marginTop: 16 }}>
+                      <Checkbox disabled={disabled} checked={v.checked} onClick={() => { dispatch({ type: 'plugin/checkedOne', index: k }) }}><strong style={{ fontSize: 16 }}>{v.name}</strong></Checkbox>
+                    </Card>
+                  </Col>
+                )
+              })}
+
+            </Row></div>)
+
+      }
+    }
+
     return (
 
       <div style={{ background: '#ECECEC', padding: '30px' }}>
@@ -63,26 +121,9 @@ class Step3 extends React.PureComponent {
             style={{ marginBottom: 24 }}
           />
 
-          <Checkbox
-            onChange={(e) => { dispatch({ type: 'plugin/checkedAll', checked: e.target.checked }) }}
-          ><strong style={{ fontSize: 16, color: 'dodgerblue' }}>全选</strong></Checkbox>
-          <Row gutter={8} style={{ marginBottom: 8 }}>
-            {pluginList.map((v, k) => {
-              let disabled = false
-              if (v.protocal == '' || v.port == '')
-                disabled = true
-              return (
-                <Col span={12} key={k}>
-                  <Card style={{ marginTop: 16 }}>
-                    <Checkbox disabled={disabled} checked={v.checked} onClick={() => { dispatch({ type: 'plugin/checkedOne', index: k }) }}><strong style={{ fontSize: 16 }}>{v.name}</strong></Checkbox>
-                  </Card>
-                </Col>
-              )
-            }
+          {chooseToShow()}
 
-            )}
 
-          </Row>
           <Divider style={{ margin: '40px 0 24px' }} />
           <Form.Item
             style={{ marginBottom: 8 }}

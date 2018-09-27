@@ -29,7 +29,7 @@ export default class Newtask extends Component {
       <Steps  current={this.getCurrentStep()} className={styles.steps}>
               <Step title="填写信息" />
               <Step title="选择目标" />
-              <Step title="选择插件" />
+              <Step title="选择插件/端口" />
               <Step title="完成" />
             </Steps>
             <Switch>
