@@ -40,7 +40,8 @@ class Step1 extends React.PureComponent {
               type:this.state.type
             }
           });
-          dispatch(routerRedux.push('/task/newtask/step2'));
+          this.state.type=='plugin'?dispatch(routerRedux.push('/task/newtask/step2_p')):dispatch(routerRedux.push('/task/newtask/step2'))
+          
         }
       });
     };

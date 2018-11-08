@@ -82,6 +82,9 @@ export const getRouterData = (app) => {
     '/task/newtask/step2': {
       component: dynamicWrapper(app, ['task','target'], () => import('../routes/ScanTasks/NewTask/Step2')),
     },
+    '/task/newtask/step2_p': {
+      component: dynamicWrapper(app, ['task','pluginTarget'], () => import('../routes/ScanTasks/NewTask/Step2_p')),
+    },
     '/task/newtask/step3': {
       component: dynamicWrapper(app, ['task','plugin'], () => import('../routes/ScanTasks/NewTask/Step3')),
     },

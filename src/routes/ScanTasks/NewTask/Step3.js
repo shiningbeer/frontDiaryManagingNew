@@ -21,9 +21,12 @@ class Step3 extends React.PureComponent {
       type: 'plugin/get'
     });
   }
+  state = {
+    useDesignatedPort: false
+  }
   render() {
 
-    const {form, plugin, newTask, dispatch, submitting } = this.props;
+    const { form, plugin, newTask, dispatch, submitting } = this.props;
     const { getFieldDecorator, validateFields } = form;
     const { pluginList, numOfChecked } = plugin
     const height = window.screen.height / 3
@@ -31,30 +34,50 @@ class Step3 extends React.PureComponent {
       dispatch(routerRedux.push('/task/newtask/step2'));
     };
     const onValidateForm = (e) => {
-      if (newTask.type!='zmap'&&numOfChecked == 0) {
+      if (newTask.type != 'zmap' && numOfChecked == 0) {
         message.config({ top: height })
         message.error('请至少选择一个插件！')
         return
       }
-      e.preventDefault();
-      let choosedpluginList = [];
-      for (var item of pluginList) {
-        if (item.checked)
-          choosedpluginList.push({
-            name: item.name,
-            port: item.port,
-            protocal: item.protocal
-          })
-      }
-      validateFields((err,value)=>{
-        dispatch({
-          type: 'task/add',
-          newTask: {
-            ...newTask,
-            pluginList: choosedpluginList,
-            ...value
-          },
+
+      if(newTask.type=='zmap'){
+        validateFields((err, value) => {
+          if(!err){
+            dispatch({
+              type: 'task/add',
+              newTask: {
+                ...newTask,
+                ...value
+              },
+            })
+          }
         })
+        return
+      }
+      e.preventDefault();
+
+      validateFields((err, value) => {
+        let choosedpluginList = [];
+        for (var item of pluginList) {
+          if (this.state.useDesignatedPort)
+            item.port = value.port
+          if (item.checked)
+            choosedpluginList.push({
+              name: item.name,
+              port: item.port,
+              protocal: item.protocal
+            })
+        }
+        if (!err||!this.state.useDesignatedPort) {
+
+          dispatch({
+            type: 'task/add',
+            newTask: {
+              ...newTask,
+              pluginList: choosedpluginList,
+            },
+          })
+        }
       })
 
     };
@@ -74,20 +97,45 @@ class Step3 extends React.PureComponent {
                   {getFieldDecorator('port', {
                     initialValue: '',
                     rules: [
-                      { required: true, message: '请输入扫描端口',pattern:'[0-9]+'},
+                      { required: true, message: '请输入扫描端口', pattern: '[0-9]+' },
                     ],
                   })(
                     <Input size='large' style={{ width: 'calc(100%)' }} placeholder="必填项，请输入要扫描的端口。" />
                   )}
                 </Input.Group>
 
-              </Form.Item>)              
+              </Form.Item>
             </Form>
           </div>)
       }
       else {
         return (
           <div>
+
+
+
+            <Form layout="horizontal" className={styles.stepForm} hideRequiredMark>
+
+              <Form.Item>
+
+                <Input.Group compact>
+                  <Checkbox
+                    onChange={(e) => { console.log(this.state.useDesignatedPort); this.setState({ useDesignatedPort: e.target.checked }) }}
+                  ><strong style={{ fontSize: 16, color: 'dodgerblue' }}>指定端口:</strong></Checkbox>
+                  {getFieldDecorator('port', {
+                    initialValue: '',
+                    rules: [
+                      { required: true, message: '请输入扫描端口', pattern: '[0-9]+' },
+                    ],
+                  })(
+
+                    <Input size='large' style={{ width: 'calc(50%)' }} placeholder="请输入指定的扫描端口。" />
+                  )}
+                </Input.Group>
+
+              </Form.Item>
+            </Form>
+            <p></p>
             <Checkbox
               onChange={(e) => { dispatch({ type: 'plugin/checkedAll', checked: e.target.checked }) }}
             ><strong style={{ fontSize: 16, color: 'dodgerblue' }}>全选</strong></Checkbox>
@@ -100,6 +148,8 @@ class Step3 extends React.PureComponent {
                   <Col span={12} key={k}>
                     <Card style={{ marginTop: 16 }}>
                       <Checkbox disabled={disabled} checked={v.checked} onClick={() => { dispatch({ type: 'plugin/checkedOne', index: k }) }}><strong style={{ fontSize: 16 }}>{v.name}</strong></Checkbox>
+                      <p></p>
+                      <p>{`默认端口：${v.port}`}</p>
                     </Card>
                   </Col>
                 )

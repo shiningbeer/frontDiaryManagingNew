@@ -50,7 +50,9 @@ export const target={
     method: 'POST',
     body:params
   }),
-
+  getZmapResult:async ()=>request(urlbase+'/target/getZmapResult', {
+    method: 'POST',
+  }),
 
 
 }
