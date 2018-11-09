@@ -104,6 +104,7 @@ export default {
         },
       };
     },
+    
     getTaskList(state, { taskList }) {
       return {
         ...state,

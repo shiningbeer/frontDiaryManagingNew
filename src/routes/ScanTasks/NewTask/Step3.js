@@ -41,13 +41,15 @@ class Step3 extends React.PureComponent {
       }
 
       if(newTask.type=='zmap'){
+        console.log(newTask)
         validateFields((err, value) => {
           if(!err){
+            delete newTask.pluginList
             dispatch({
               type: 'task/add',
               newTask: {
                 ...newTask,
-                ...value
+                port:value.port
               },
             })
           }

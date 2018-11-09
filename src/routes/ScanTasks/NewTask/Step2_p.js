@@ -38,8 +38,8 @@ class Step2 extends React.PureComponent {
       let choosedTargetList=[];
       for(var item of targetList){
         if(item.checked){
-          let {_id,name,count}=item
-          var target={_id,name,count}
+          let {_id,name,lines}=item
+          var target={_id,name,lines}
           choosedTargetList.push(target)
         }
       }
@@ -74,7 +74,7 @@ class Step2 extends React.PureComponent {
           <Card style={{ marginTop: 16 }}>
               <Checkbox checked={v.checked} onClick={()=>{dispatch({type:'pluginTarget/checkedOne',index:k})}}><strong style={{fontSize:16}}>{v.taskName}</strong></Checkbox>
               <p></p>
-              <p>{`数量：${v.count}`}</p>
+              <p>{`数量：${v.lines}`}</p>
               <p>{`端口：${v.port}`}</p>
           </Card>
           </Col>

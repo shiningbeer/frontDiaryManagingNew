@@ -14,6 +14,7 @@ export default class Newtask extends Component {
     switch (pathList[pathList.length - 1]) {
       case 'step1': return 0;
       case 'step2': return 1;
+      case 'step2_p': return 1;
       case 'step3': return 2;
       case 'step4': return 3;
       default: return 0;
