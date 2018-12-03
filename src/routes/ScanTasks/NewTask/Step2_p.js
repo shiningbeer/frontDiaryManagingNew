@@ -17,16 +17,16 @@ const formItemLayout = {
 class Step2 extends React.PureComponent {
   componentWillMount(){
     this.props.dispatch({
-      type: 'pluginTarget/get'
+      type: 'target/get'
     });
   }
   render() {
-    const { newTask,pluginTarget, dispatch, submitting } = this.props;
+    const { newTask,target, dispatch, submitting } = this.props;
     const onPrev = () => {
       dispatch(routerRedux.push('/task/newtask/step1'));
     };
-   console.log(pluginTarget) 
-    const {targetList,numOfChecked}=pluginTarget
+   console.log(target) 
+    const {targetList,numOfChecked}=target
     const height=window.screen.height/3
     const onValidateForm = (e) => {
       if(numOfChecked==0){
@@ -66,16 +66,15 @@ class Step2 extends React.PureComponent {
             style={{ marginBottom: 24 }}
           />
       <Checkbox
-        onChange={(e)=>{dispatch({type:'pluginTarget/checkedAll',checked:e.target.checked})}}
+        onChange={(e)=>{dispatch({type:'target/checkedAll',checked:e.target.checked})}}
       ><strong style={{fontSize:16,color:'dodgerblue'}}>全选</strong></Checkbox>
       <Row gutter={8} style={{ marginBottom: 8 }}>
         {targetList.map((v,k)=>(
           <Col span={12} key={k}>
           <Card style={{ marginTop: 16 }}>
-              <Checkbox checked={v.checked} onClick={()=>{dispatch({type:'pluginTarget/checkedOne',index:k})}}><strong style={{fontSize:16}}>{v.taskName}</strong></Checkbox>
+              <Checkbox checked={v.checked} onClick={()=>{dispatch({type:'target/checkedOne',index:k})}}><strong style={{fontSize:16}}>{v.name}</strong></Checkbox>
               <p></p>
               <p>{`数量：${v.lines}`}</p>
-              <p>{`端口：${v.port}`}</p>
           </Card>
           </Col>
         )
@@ -104,7 +103,7 @@ class Step2 extends React.PureComponent {
       <Divider style={{ margin: '40px 0 24px' }} />
       <div className={styles.desc}>
         <h3>说明</h3>
-        <p>插件使用的目标为单个IP，可以是zmap扫描的结果，也可以是用户添加。</p>
+        <p>任务目标为特定地理范围的IP地址池，在目标管理菜单中可增加和删除目标。在此页面只能选择本用户增加的目标。</p>
         <p>请至少选择一个目标。</p>
       </div>
       </div>
@@ -112,9 +111,9 @@ class Step2 extends React.PureComponent {
   }
 }
 
-export default connect(({ task,pluginTarget,loading }) => {
+export default connect(({ task,target,loading }) => {
   
   return {
-  pluginTarget:pluginTarget,
+  target:target,
   newTask:task.newTask
 }})(Step2);

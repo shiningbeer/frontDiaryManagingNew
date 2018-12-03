@@ -73,6 +73,8 @@ class Step2 extends React.PureComponent {
           <Col span={12} key={k}>
           <Card style={{ marginTop: 16 }}>
               <Checkbox checked={v.checked} onClick={()=>{dispatch({type:'target/checkedOne',index:k})}}><strong style={{fontSize:16}}>{v.name}</strong></Checkbox>
+              <p></p>
+              <p>{`数量：${v.lines}`}</p>
           </Card>
           </Col>
         )

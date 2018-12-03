@@ -21,15 +21,15 @@ const links = [{
   href: '',
 }];
 
-const copyright = <Fragment>Copyright <Icon type="copyright" /> 2018 Net Lighter 出品</Fragment>;
+const copyright = <Fragment>Copyright <Icon type="copyright" /> 2018 泛智能扫描平台 出品</Fragment>;
 
 class UserLayout extends React.PureComponent {
   getPageTitle() {
     const { routerData, location } = this.props;
     const { pathname } = location;
-    let title = 'Net Lighter';
+    let title = '泛智能扫描平台';
     if (routerData[pathname] && routerData[pathname].name) {
-      title = `${routerData[pathname].name} -Net Lighter`;
+      title = `${routerData[pathname].name} -泛智能扫描平台`;
     }
     return title;
   }
@@ -43,10 +43,10 @@ class UserLayout extends React.PureComponent {
               <div className={styles.header}>
                 <Link to="/">
                   <img alt="logo" className={styles.logo} src={logo} />
-                  <span className={styles.title}>Net Lighter</span>
+                  <span className={styles.title}>泛智能扫描平台</span>
                 </Link>
               </div>
-              <div className={styles.desc}>Net Lighter 基于ant-design-pro设计</div>
+              <div className={styles.desc}>泛智能扫描平台 基于ant-design-pro设计</div>
             </div>
             <Switch>
               {getRoutes(match.path, routerData).map(item =>
