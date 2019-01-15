@@ -92,9 +92,9 @@ class BasicLayout extends React.PureComponent {
   getPageTitle() {
     const { routerData, location } = this.props;
     const { pathname } = location;
-    let title = '泛智能扫描平台';
+    let title = 'Net Lighter';
     if (routerData[pathname] && routerData[pathname].name) {
-      title = `${routerData[pathname].name} - 泛智能扫描平台`;
+      title = `${routerData[pathname].name} - Net Lighter`;
     }
     return title;
   }
@@ -207,7 +207,7 @@ class BasicLayout extends React.PureComponent {
             <GlobalFooter              
               copyright={
                 <Fragment>
-                  Copyright <Icon type="copyright" /> 2018 泛智能扫描平台 出品
+                  Copyright <Icon type="copyright" /> 2018 Net Lighter 出品
                 </Fragment>
               }
             />

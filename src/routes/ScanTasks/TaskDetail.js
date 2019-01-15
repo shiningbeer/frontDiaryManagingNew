@@ -24,6 +24,7 @@ export default class TaskDetail extends PureComponent {
     });
 
   }
+  
   state = {
     modalVisible: false,
     currentNode: ''

@@ -167,10 +167,15 @@ class TaskList extends PureComponent {
       }
       let percent = progress * 100 / total
       
-      if (complete&&stage=='plugin'){
+      if (type=='zmapPluginScan'&&complete&&stage=='plugin'){
         pstatus = 'success'
         showProgress="任务完成！"
       }
+      if(type!='zmapPluginScan'&&complete){
+        pstatus = 'success'
+        showProgress="任务完成！"
+      }
+
       return (
         <div className={styles.listContent}>
           <div className={styles.listContentItem}>
